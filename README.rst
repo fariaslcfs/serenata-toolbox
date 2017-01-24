@@ -2,26 +2,15 @@
    :target: https://travis-ci.org/datasciencebr/serenata-toolbox
    :alt: Travis CI build status (Linux)
 
-.. image:: https://readthedocs.org/projects/serenata-toolbox/badge/?version=latest
-   :target: http://serenata-toolbox.readthedocs.io/en/latest/?badge=latest
-   :alt: Documentation Status
-
 .. image:: https://landscape.io/github/datasciencebr/serenata-toolbox/master/landscape.svg?style=flat
    :target: https://landscape.io/github/datasciencebr/serenata-toolbox/master
    :alt: Code Health
-
-.. image:: https://img.shields.io/pypi/v/serenata_toolbox.svg
-   :target: https://pypi.python.org/pypi/serenata_toolbox/
-   :alt: Latest PyPI version
-
-
 
 Serenata de Amor Toolbox
 ========================
 
 `PyPI <https://pypi.python.org/>`_  package to support `Serenata de Amor <https://github.com/datasciencebr/serenata-de-amor>`_
 and `Rosie <https://github.com/datasciencebr/rosie>`_ development.
-
 
 Installation
 ------------
