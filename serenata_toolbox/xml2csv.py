@@ -49,10 +49,11 @@ class Xml2Csv:
         Parses the XML yielding a string in JSON format for each record found.
         """
         encoding = kwargs.get('encoding', 'utf-16')
-        soup = BeautifulSoup(open(self.xml_path, encoding=encoding), 'xml')
-        for tag in soup.orgao.DESPESAS.children:
-            fields = {field.name: field.text for field in tag.contents}
-            yield json.dumps(fields)
+        with open(self.xml_path, encoding=encoding) as handler:
+            soup = BeautifulSoup(handler, 'xml')
+            for tag in soup.orgao.DESPESAS.children:
+                fields = {field.name: field.text for field in tag.contents}
+                yield json.dumps(fields)
 
     def get_csv_header(self, **kwargs):
         """
