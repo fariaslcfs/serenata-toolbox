@@ -1,16 +1,13 @@
-from datetime import date as d
 import os
-
-import numpy as np
 import pandas as pd
-from rosie.dataset import Dataset
+import numpy as np
+from datetime import date as d
 
+import rosie # if using from rosie import ... causes circular referencing
 
 class Reimbursements:
 
     FILE_BASE_NAME = 'reimbursements.xz'
-    
-    BASE_YEAR = 2009
 
     CSV_PARAMS = {
         'compression': 'xz',
@@ -44,10 +41,10 @@ class Reimbursements:
         return pd.read_csv(filepath, dtype=dtype)
 
     def split_reimbursements(self):
-        print('Splitting reimbursements in years...')
-        year = self.BASE_YEAR
-        ds = Dataset(self.path)
-        ds_all_years = ds.get_reimbursements(0)
+        year = 2009
+        dt = rosie.dataset
+        ds = dt.Dataset(self.path)
+        ds_all_years = ds.get_reimbursements(None)
         current_year = d.today().year
         while (year <= current_year):
             ds_year = ds_all_years[ds_all_years['year'] == year]
@@ -126,10 +123,10 @@ class Reimbursements:
         return ', '.join(set(strings))
 
     def write_reimbursement_file(self, receipts):
-        print('Casting changes to a new DataFrame…')
+        print('Casting changes to a new DataFrame ...')
         df = pd.DataFrame(data=receipts)
 
-        print('Writing it to file…')
+        print('Writing it to file ...')
         filepath = os.path.join(self.path, self.FILE_BASE_NAME)
         df.to_csv(filepath, **self.CSV_PARAMS)
 
