@@ -5,11 +5,13 @@ import numpy as np
 import pandas as pd
 from .reimbursements import Reimbursements
 from .xml2csv import convert_xml_to_csv
+from datetime import date as d
+from os.path import exists
+
 
 class CEAPDataset:
     def __init__(self, path):
         self.path = path
-
 
     def fetch(self):
         urls = ['http://www.camara.gov.br/cotas/AnoAtual.zip',
@@ -28,26 +30,29 @@ class CEAPDataset:
         urlretrieve('http://www2.camara.leg.br/transparencia/cota-para-exercicio-da-atividade-parlamentar/explicacoes-sobre-o-formato-dos-arquivos-xml',
                     os.path.join(self.path, 'datasets-format.html'))
 
-
     def convert_to_csv(self):
         for filename in ['AnoAtual', 'AnoAnterior', 'AnosAnteriores']:
             xml_path = os.path.join(self.path, '{}.xml'.format(filename))
             csv_path = xml_path.replace('.xml', '.csv')
             convert_xml_to_csv(xml_path, csv_path)
 
-
     def translate(self):
         for filename in ['AnoAtual', 'AnoAnterior', 'AnosAnteriores']:
             csv_path = os.path.join(self.path, '{}.csv'.format(filename))
             self.__translate_file(csv_path)
 
-
     def clean(self):
         reimbursements = Reimbursements(self.path)
-        dataset = reimbursements.group(reimbursements.receipts)
-        reimbursements.write_reimbursement_file(dataset)
-        reimbursements.split_reimbursements() # creates one reimbursement file per year
-
+        # dataset = reimbursements.group(reimbursements.receipts)
+        # reimbursements.write_reimbursement_file(dataset)
+        current_year = d.today().year + 1
+        counter = 0
+        for year in range(2009, current_year):
+            f_path = os.path.join(self.path, 'reimbursements_{}.xz'.format(str(year)))
+            if exists(f_path):  # not the best way but... another hack
+                counter += 1
+        if counter == 0:
+            reimbursements.split_reimbursements()  # creates one reimbursement file per year
 
     def __translate_file(self, csv_path):
         output_file_path = csv_path \
