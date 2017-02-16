@@ -1,11 +1,12 @@
-import json
-import os
-import sys
 from csv import DictWriter
 from datetime import datetime
 from io import StringIO
+import json
+import os
+import sys
 
 from bs4 import BeautifulSoup
+
 from lxml.etree import iterparse
 
 
@@ -69,12 +70,13 @@ def convert_xml_to_csv(xml_file_path, csv_file_path):
     output('Reading the XML file')
     for json_io in xml_parser(xml_file_path):
         csv_io = StringIO()
-        writer = DictWriter(csv_io, fieldnames=headers)
+        writer = DictWriter(csv_io, fieldnames=headers, extrasaction='ignore')
         writer.writerow(json.loads(json_io.getvalue()))
 
         output('Writing record #{:,} to the CSV'.format(count), end='\r')
         with open(csv_file_path, 'a', encoding='utf-8') as csv_file:
-            print(csv_io.getvalue(), file=csv_file)
+            lcvalue = csv_io.getvalue().lower()
+            print(lcvalue, file=csv_file)
 
         json_io.close()
         csv_io.close()

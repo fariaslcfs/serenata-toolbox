@@ -46,6 +46,7 @@ class CEAPDataset:
         reimbursements = Reimbursements(self.path)
         dataset = reimbursements.group(reimbursements.receipts)
         reimbursements.write_reimbursement_file(dataset)
+        reimbursements.split_reimbursements() # creates one reimbursement file per year
 
 
     def __translate_file(self, csv_path):
@@ -56,12 +57,12 @@ class CEAPDataset:
             .replace('.csv', '.xz')
 
         data = pd.read_csv(csv_path,
-                           dtype={'ideDocumento': np.str,
-                                  'ideCadastro': np.str,
-                                  'nuCarteiraParlamentar': np.str,
-                                  'codLegislatura': np.str,
-                                  'txtCNPJCPF': np.str,
-                                  'numRessarcimento': np.str})
+                           dtype={'idedocumento': np.str,
+                                  'idecadastro': np.str,
+                                  'nucarteiraparlamentar': np.str,
+                                  'codlegislatura': np.str,
+                                  'txtcnpjcpf': np.str,
+                                  'numressarcimento': np.str})
         data.rename(columns={
             'idedocumento': 'document_id',
             'txnomeparlamentar': 'congressperson_name',
@@ -98,56 +99,54 @@ class CEAPDataset:
             data['subquota_description'].astype('category')
 
         categories = {
-            'ASSINATURA DE PUBLICAÇÕES':
+            'assinatura de publicações':
                 'Publication subscriptions',
-            'COMBUSTÍVEIS E LUBRIFICANTES.':
+            'combustíveis e lubrificantes.':
                 'Fuels and lubricants',
-            'CONSULTORIAS, PESQUISAS E TRABALHOS TÉCNICOS.':
+            'consultorias, pesquisas e trabalhos técnicos.':
                 'Consultancy, research and technical work',
-            'DIVULGAÇÃO DA ATIVIDADE PARLAMENTAR.':
+            'divulgação da atividade parlamentar.':
                 'Publicity of parliamentary activity',
-            'Emissão Bilhete Aéreo':
+            'emissão bilhete aéreo':
                 'Flight ticket issue',
-            'FORNECIMENTO DE ALIMENTAÇÃO DO PARLAMENTAR':
+            'fornecimento de alimentação do parlamentar':
                 'Congressperson meal',
-            'HOSPEDAGEM ,EXCETO DO PARLAMENTAR NO DISTRITO FEDERAL.':
+            'hospedagem ,exceto do parlamentar no distrito federal.':
                 'Lodging, except for congressperson from Distrito Federal',
-            'LOCAÇÃO OU FRETAMENTO DE AERONAVES':
+            'locação ou fretamento de aeronaves':
                 'Aircraft renting or charter of aircraft',
-            'LOCAÇÃO OU FRETAMENTO DE EMBARCAÇÕES':
+            'locação ou fretamento de embarcações':
                 'Watercraft renting or charter',
-            'LOCAÇÃO OU FRETAMENTO DE VEÍCULOS AUTOMOTORES':
+            'locação ou fretamento de veículos automotores':
                 'Automotive vehicle renting or charter',
-            'MANUTENÇÃO DE ESCRITÓRIO DE APOIO À ATIVIDADE PARLAMENTAR':
+            'manutenção de escritório de apoio à atividade parlamentar':
                 'Maintenance of office supporting parliamentary activity',
-            'PARTICIPAÇÃO EM CURSO, PALESTRA OU EVENTO SIMILAR':
+            'participação em curso, palestra ou evento similar':
                 'Participation in course, talk or similar event',
-            'PASSAGENS AÉREAS':
+            'passagens aéreas':
                 'Flight tickets',
-            'PASSAGENS TERRESTRES, MARÍTIMAS OU FLUVIAIS':
+            'passagens terrestres, marítimas ou fluviais':
                 'Terrestrial, maritime and fluvial tickets',
-            'SERVIÇO DE SEGURANÇA PRESTADO POR EMPRESA ESPECIALIZADA.':
+            'serviço de segurança prestado por empresa especializada.':
                 'Security service provided by specialized company',
-            'SERVIÇO DE TÁXI, PEDÁGIO E ESTACIONAMENTO':
+            'serviço de táxi, pedágio e estacionamento':
                 'Taxi, toll and parking',
-            'SERVIÇOS POSTAIS':
+            'serviços postais':
                 'Postal services',
-            'TELEFONIA':
+            'telefonia':
                 'Telecommunication',
-            'AQUISIÇÃO DE MATERIAL DE ESCRITÓRIO.':
+            'aquisição de material de escritório.':
                 'Purchase of office supplies',
-            'AQUISIÇÃO OU LOC. DE SOFTWARE; SERV. POSTAIS; ASS.':
+            'aquisição ou loc. de software; serv. postais; ass.':
                 'Software purchase or renting; Postal services; Subscriptions',
-            'LOCAÇÃO DE VEÍCULOS AUTOMOTORES OU FRETAMENTO DE EMBARCAÇÕES ':
+            'locação de veículos automotores ou fretamento de embarcações ':
                 'Automotive vehicle renting or watercraft charter',
-            'LOCOMOÇÃO, ALIMENTAÇÃO E  HOSPEDAGEM':
+            'locomoção, alimentação e  hospedagem':
                 'Locomotion, meal and lodging',
         }
-        categories = [categories[cat]
-                      for cat in data['subquota_description'].cat.categories]
-        data['subquota_description'].cat.rename_categories(categories,
-                                                           inplace=True)
-        data.to_csv(output_file_path, compression='xz', index=False,
-                    encoding='utf-8')
+        
+        categories = [categories[cat] for cat in data['subquota_description'].cat.categories]
+        data['subquota_description'].cat.rename_categories(categories, inplace=True)
+        data.to_csv(output_file_path, compression='xz', index=False, encoding='utf-8')
 
         return output_file_path

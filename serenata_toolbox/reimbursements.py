@@ -1,11 +1,16 @@
+from datetime import date as d
 import os
-import pandas as pd
+
 import numpy as np
+import pandas as pd
+from rosie.dataset import Dataset
 
 
 class Reimbursements:
 
     FILE_BASE_NAME = 'reimbursements.xz'
+    
+    BASE_YEAR = 2009
 
     CSV_PARAMS = {
         'compression': 'xz',
@@ -37,6 +42,20 @@ class Reimbursements:
             'term_id': np.str,
         }
         return pd.read_csv(filepath, dtype=dtype)
+
+    def split_reimbursements(self):
+        print('Splitting reimbursements in years...')
+        year = self.BASE_YEAR
+        ds = Dataset(self.path)
+        ds_all_years = ds.get_reimbursements(0)
+        current_year = d.today().year
+        while (year <= current_year):
+            ds_year = ds_all_years[ds_all_years['year'] == year]
+            self.FILE_BASE_NAME = self.FILE_BASE_NAME[:-3] + '_' + str(year) + '.xz'
+            print( 'Creating ', self.FILE_BASE_NAME)
+            self.write_reimbursement_file(ds_year)
+            self.FILE_BASE_NAME = 'reimbursements.xz'
+            year += 1
 
     @property
     def receipts(self):
