@@ -45,8 +45,8 @@ class CEAPDataset:
         reimbursements = Reimbursements(self.path)
         f_path = os.path.join(self.path, 'reimbursements.xz')
         if not os.path.exists(f_path):
-              dataset = reimbursements.group(reimbursements.receipts)
-              reimbursements.write_reimbursement_file(dataset)
+            dataset = reimbursements.group(reimbursements.receipts)
+            reimbursements.write_reimbursement_file(dataset)
         current_year = d.today().year + 1
         counter = 0
         for year in range(2009, current_year):
