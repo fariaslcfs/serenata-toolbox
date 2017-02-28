@@ -1,10 +1,10 @@
 import os
-import pandas as pd
-import numpy as np
-import xml.etree.ElementTree as ET
-import urllib
-
 from datetime import datetime
+
+import urllib
+import numpy as np
+import pandas as pd
+import xml.etree.ElementTree as ET
 
 def extract_text(node, xpath):
     return node.find(xpath).text.strip()

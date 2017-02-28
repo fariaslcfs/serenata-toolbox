@@ -1,13 +1,13 @@
 import os.path
+from datetime import date as d
+
 from urllib.request import urlretrieve
 from zipfile import ZipFile
 import numpy as np
 import pandas as pd
+
 from .reimbursements import Reimbursements
 from .xml2csv import convert_xml_to_csv
-from datetime import date as d
-from os.path import exists
-
 
 class CEAPDataset:
     def __init__(self, path):
@@ -51,7 +51,7 @@ class CEAPDataset:
         counter = 0
         for year in range(2009, current_year):
             f_path = os.path.join(self.path, 'reimbursements_{}.xz'.format(str(year)))
-            if exists(f_path):  # not the best way but... another hack
+            if os.path.exists(f_path):  # not the best way but... another hack
                 counter += 1
         if counter == 0:
             reimbursements.split_reimbursements()  # creates one reimbursement file per year

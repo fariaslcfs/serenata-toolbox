@@ -1,9 +1,10 @@
 import os
-import pandas as pd
-import numpy as np
 from datetime import date as d
 
-import rosie # if using from rosie import ... causes circular referencing
+import numpy as np
+import pandas as pd
+
+import rosie  # if using from rosie import ... causes circular referencing
 
 class Reimbursements:
 
@@ -42,18 +43,16 @@ class Reimbursements:
 
     def split_reimbursements(self):
         year = 2009
-        dt = rosie.dataset
-        ds = dt.Dataset(self.path)
+        ds = rosie.dataset.Dataset(self.path)
         ds_all_years = ds.get_reimbursements(None)
         current_year = d.today().year
         while (year <= current_year):
             ds_year = ds_all_years[ds_all_years['year'] == year]
-            self.FILE_BASE_NAME = self.FILE_BASE_NAME[:-3] + '_' + str(year) + '.xz'
-            print( 'Creating ', self.FILE_BASE_NAME)
-            self.write_reimbursement_file(ds_year)
-            self.FILE_BASE_NAME = 'reimbursements.xz'
+            print('Creating ', self.FILE_BASE_NAME[:-3] + '_' + str(year) + '.xz')
+            f_path = os.path.join(self.path, self.FILE_BASE_NAME[:-3] + '_' + str(year) + '.xz')
+            ds_year.to_csv(f_path, **self.CSV_PARAMS)
             year += 1
-
+    
     @property
     def receipts(self):
         print('Merging all datasets…')

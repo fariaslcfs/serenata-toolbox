@@ -1,14 +1,12 @@
-from csv import DictWriter
-from datetime import datetime
-from io import StringIO
-import json
 import os
 import sys
+from io import StringIO
+from datetime import datetime
 
+import json
+from csv import DictWriter
 from bs4 import BeautifulSoup
-
 from lxml.etree import iterparse
-
 
 def output(*args, **kwargs):
     """Helper to print messages with a date/time marker"""
@@ -76,7 +74,7 @@ def convert_xml_to_csv(xml_file_path, csv_file_path):
         output('Writing record #{:,} to the CSV'.format(count), end='\r')
         with open(csv_file_path, 'a', encoding='utf-8') as csv_file:
             lcvalue = csv_io.getvalue().lower()
-            print(lcvalue, file=csv_file)
+            print(lcvalue.lower(), file=csv_file)
 
         json_io.close()
         csv_io.close()
